@@ -443,6 +443,32 @@ body.hard #candles{opacity:.35!important;filter:hue-rotate(70deg) saturate(1.4)}
 .cursecard{box-shadow:inset 0 0 0 1px rgba(255,140,120,.55),0 0 60px rgba(255,60,40,.25)}
 .cursecard .item{margin-top:10px}.cursecard .ii svg{width:32px;height:32px}
 @media (min-width:768px){.shelf{grid-template-columns:repeat(5,1fr);gap:20px 16px}}
+/* ---------- fixes: stable layout, reachable close ---------- */
+.banner{height:78px;min-height:0;overflow:hidden;flex:none}
+#bant{display:block;max-height:100%}
+@media (max-height:700px){.banner{height:68px;min-height:0}}
+.chip,#tm{font-variant-numeric:tabular-nums}
+#tmchip{min-width:76px}
+#modal{padding:max(16px,calc(env(safe-area-inset-top) + 8px)) max(12px,env(safe-area-inset-right)) max(16px,calc(env(safe-area-inset-bottom) + 8px)) max(12px,env(safe-area-inset-left))}
+#mcard{max-height:calc(100vh - 32px);max-height:calc(100dvh - max(32px,calc(env(safe-area-inset-top) + env(safe-area-inset-bottom) + 16px)));-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.mxbar{position:-webkit-sticky;position:sticky;top:0;height:0;z-index:6}
+.mxbar .mx{position:absolute;top:8px;right:8px;width:44px;height:44px;border-radius:50%;opacity:1;color:#f2d27e;background:radial-gradient(circle at 50% 35%,rgba(60,42,20,.95),rgba(12,9,6,.96));box-shadow:inset 0 0 0 1px rgba(240,207,122,.6),0 4px 12px rgba(0,0,0,.6);display:grid;place-items:center;font-size:26px}
+.parch .mxbar .mx,#mcard>.mxbar .mx{touch-action:manipulation}
+/* ---------- Совятня ---------- */
+.ava{display:inline-grid;place-items:center;border-radius:50%;color:#fff3d6;font-family:'Cormorant SC',Georgia,serif;font-weight:700;flex:none;vertical-align:middle;text-shadow:0 1px 2px #000;line-height:1}
+.owlchip{gap:5px;padding:0 10px 0 7px}.owlchip span{font-family:'Cormorant SC',serif;font-size:15px;color:#f2d27e}.owlchip b{display:inline-flex;align-items:center;gap:4px;font-size:15px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#7a6a5a;box-shadow:0 0 0 1px rgba(0,0,0,.5);vertical-align:1px}
+.dot.on{background:#5dff8a;box-shadow:0 0 8px #5dff8a}
+.netchip{padding:0 6px;gap:0;min-width:40px;justify-content:center}.netchip svg{width:22px;height:22px}
+.netchip.co .ava{margin-left:-6px}.netchip.co .ava:first-child{margin-left:0}
+.pring{position:absolute;border-radius:50%;pointer-events:none;box-shadow:0 0 0 3px var(--rc2),0 0 0 5px var(--rc),0 0 18px var(--rc);animation:pring 1.3s ease-out forwards;z-index:4}
+.pring span{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:4px;white-space:nowrap;font:700 12px 'Cormorant Garamond',serif;color:#fff3d6;background:var(--rc);padding:1px 6px;border-radius:8px;box-shadow:0 0 0 1px var(--rc2)}
+@keyframes pring{0%{transform:scale(1.25);opacity:0}15%{transform:scale(1);opacity:1}75%{opacity:1}100%{opacity:0;transform:scale(.9)}}
+.owlwait{width:70px;height:70px;margin:0 auto;color:#f2d27e;animation:mbob 1.4s ease-in-out infinite alternate}.owlwait svg{width:100%;height:100%}
+.letter2{position:relative;padding-top:34px}
+.seal2{position:absolute;left:50%;top:-26px;width:56px;height:56px;margin-left:-28px;border-radius:50%;display:grid;place-items:center;color:#ffe9b0;font:700 26px 'Cormorant SC',serif;box-shadow:0 0 0 3px rgba(0,0,0,.25),0 4px 10px rgba(0,0,0,.5)}
+#mcard:has(.letter2){overflow:visible;margin-top:30px}
+.guest #brst{opacity:.4}
 </style></head><body>
 <div id="bg"><div class="bgl" id="bgA"></div><div class="bgl" id="bgB"></div></div><div id="shade"></div><div id="candles"></div><div id="mmap"></div>
 <section class="screen" id="s-intro"><div class="col"></div></section><section class="screen" id="s-sort"><div class="col"></div></section>
@@ -631,7 +657,7 @@ const BON=[{id:'lumos',n:'Люмос',d:'Освещает клетку, где �
 {id:'felix',n:'Феликс',d:'Жидкая удача: следующая ошибка не будет засчитана.',price:70},
 {id:'tear',n:'Слеза феникса',d:'Исцеляет: все сердца возвращаются после поражения.',price:80}];
 const ACH=[['first','Первокурсник','Пройди первый уровень',0],['h0','Читатель Запретной секции','Реши первую задачу Запретной секции',0],['hvow','Непреложный','Реши задачу с Непреложным обетом без ошибок',0],['h3','Тройное проклятие','Реши задачу с тремя проклятиями сразу',0],['h4','Орден Мерлина','Реши все 100 задач Запретной секции',0],
-['monster','Погладь по корешку','Усмири Чудовищную книгу',1],['peeves','Кровавый Барон','Поймай Пивза',1],['mandrake','Мандрагора','Спасись от окаменения',1],['finite','Фините Инкантатем','Сними чары с поля',1],['accio','Акцио, палочка!','Верни выбитую палочку',1],['taboo','Табу','Произнеси имя, которое нельзя называть',1],['perfect','Превосходно!','Пройди уровень без единой ошибки',0],
+['coop','Вместе веселее','Реши уровень вместе с другом в Совятне',0],['monster','Погладь по корешку','Усмири Чудовищную книгу',1],['peeves','Кровавый Барон','Поймай Пивза',1],['mandrake','Мандрагора','Спасись от окаменения',1],['finite','Фините Инкантатем','Сними чары с поля',1],['accio','Акцио, палочка!','Верни выбитую палочку',1],['taboo','Табу','Произнеси имя, которое нельзя называть',1],['perfect','Превосходно!','Пройди уровень без единой ошибки',0],
 ['c0','Камень добыт','Пройди I курс',0],['c1','Наследник побеждён','Пройди II курс',0],['c2','Узник спасён','Пройди III курс',0],['c3','Чемпион Турнира','Пройди IV курс',0],['c4','Армия Дамблдора','Пройди V курс',0],['c5','Тайна Принца','Пройди VI курс',0],['c6','Мальчик, который выжил','Пройди VII курс',0],
 ['speed','Быстрее Молнии','Реши поле 8×8 или больше меньше чем за минуту',0],['scholar','Лучшая ученица курса','Получи «Превосходно» на 30 уровнях',0],
 ['snitch','Ловец','Поймай золотой снитч',1],['s0','Сквозь стену','Найди платформу 9¾',1],['s1','Комната по требованию','Найди Выручай-комнату',1],['letters','Письма ниоткуда','Растревожь сову в главном зале',1],['marauder','Шалость удалась','Открой Карту Мародёров',1],['patronus','Экспекто Патронум','Вызови Патронуса',1],['leviosa','Левиоса!','Произнеси левитационные чары',1],['always','Всегда','Скажи то самое слово',1],['dobby','Добби свободен','Вспомни древнюю комбинацию клавиш',1],['avada','Непростительно','Произнеси запретное заклятие',1],['meow','Мяудоку','Вспомни, с чего всё началось',1],['crest','Находчивость','Заслужи внимание Дамблдора',1]];
@@ -689,9 +715,9 @@ function crestSVG(k,cls='crestbig'){const H=HOUSES[k]||HOUSES.G;return `<svg cla
 const SNITCH=`<svg viewBox="0 0 70 44"><g class="w wl"><path d="M28 22C20 8 8 4 1 6c5 3 6 6 4 8 4 0 5 3 3 5 5-1 9 1 20 3z" fill="#f4f1e6" stroke="#b9b29b" stroke-width=".8"/><path d="M6 9c6 2 13 6 20 12M5 15c6 1 13 4 21 7" stroke="#c9c2aa" stroke-width=".7" fill="none"/></g><g class="w wr"><path d="M42 22C50 8 62 4 69 6c-5 3-6 6-4 8-4 0-5 3-3 5-5-1-9 1-20 3z" fill="#f4f1e6" stroke="#b9b29b" stroke-width=".8"/><path d="M64 9c-6 2-13 6-20 12M65 15c-6 1-13 4-21 7" stroke="#c9c2aa" stroke-width=".7" fill="none"/></g><circle cx="35" cy="23" r="9" fill="url(#gCoin)" stroke="#7d5418" stroke-width=".8"/><path d="M27 21c4 2 12 2 16 0M30 16c1 4 1 10 0 14M40 16c-1 4-1 10 0 14" stroke="#8a5f1e" stroke-width=".8" fill="none"/><circle cx="32" cy="19.5" r="2.2" fill="#fff" opacity=".8"/></svg>`;
 const DEMENTOR=`<svg viewBox="0 0 100 160"><defs><linearGradient id="dmg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b0d12"/><stop offset=".7" stop-color="#1a1e28" stop-opacity=".85"/><stop offset="1" stop-color="#2a3040" stop-opacity="0"/></linearGradient></defs><path d="M50 4C34 4 26 18 26 34c0 12-8 22-16 34 6 0 10-2 12-4-4 14-10 30-18 44 8-2 12-6 16-10-2 18-6 34-10 54 10-10 16-18 22-26 2 10 4 20 8 30 4-12 6-20 8-30 6 8 12 16 22 26-4-20-8-36-10-54 4 4 8 8 16 10-8-14-14-30-18-44 2 2 6 4 12 4-8-12-16-22-16-34C74 18 66 4 50 4z" fill="url(#dmg)"/><ellipse cx="50" cy="32" rx="10" ry="13" fill="#000"/></svg>`;
 /* ---------- STORE ---------- */
-const DEF={name:'',house:null,gal:150,pts:0,inv:{lumos:3,revelio:3,turner:2,felix:1,tear:1},skins:['owl'],skin:'owl',prog:{},sec:{s0:0,s1:0},ach:{},set:{sound:1,music:1,autoX:0,vib:1},accio:'',crest:0,seen:{}};
+const DEF={runs:{},name:'',house:null,gal:150,pts:0,inv:{lumos:3,revelio:3,turner:2,felix:1,tear:1},skins:['owl'],skin:'owl',prog:{},sec:{s0:0,s1:0},ach:{},set:{online:1,sound:1,music:1,autoX:0,vib:1},accio:'',crest:0,seen:{}};
 let S, canStore=true;
-function load(){let o={};try{o=JSON.parse(localStorage.getItem('sovudoku1')||'{}')}catch(e){canStore=false}
+function load(){let o={};try{o=JSON.parse(localStorage.getItem('sovudoku1')||'{}')}catch(e){canStore=false}if(!o.pid)o.pid='p'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
   S=JSON.parse(JSON.stringify(DEF));for(const k in o){if(o[k]&&typeof o[k]==='object'&&!Array.isArray(o[k])&&S[k]&&typeof S[k]==='object'&&!Array.isArray(S[k]))Object.assign(S[k],o[k]);else S[k]=o[k]}}
 let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem('sovudoku1',JSON.stringify(S))}catch(e){}},150)}
 /* ---------- LEVELS ---------- */
@@ -768,7 +794,8 @@ function toast(html,icon){const ts=$('#toasts');while(ts.children.length>=2)ts.f
 function floatText(x,y,txt,col){const e=h(`<div class="pts" style="left:${x}px;top:${y}px;color:${col||'#f2d27e'}">${txt}</div>`);document.body.appendChild(e);setTimeout(()=>e.remove(),1700)}
 let modalClose=null;
 function modal(html,opt={}){const m=$('#modal'),c=$('#mcard');c.className=opt.cls||'';c.innerHTML=html;m.classList.toggle('clear',!!opt.clear);m.classList.add('on');modalClose=opt.onClose||null;c.scrollTop=0;
- c.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal());pauseTimer(true);return c}
+ c.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal());fixMx(c);pauseTimer(true);return c}
+function fixMx(c){const x=c.querySelector('.panel>.mx,.parch>.mx');if(!x)return;const bar=document.createElement('div');bar.className='mxbar';bar.appendChild(x);c.prepend(bar)}
 function closeModal(){$('#modal').classList.remove('on');const f=modalClose;modalClose=null;pauseTimer(false);if(f)f()}
 function gal(n,src){S.gal+=n;save();refreshChips();if(n>0)AU.coin();if(src){const r=src.getBoundingClientRect();floatText(r.left+r.width/2,r.top,'+'+n+' ✦')}}
 function refreshChips(){document.querySelectorAll('[data-gal]').forEach(e=>e.textContent=S.gal);document.querySelectorAll('[data-pts]').forEach(e=>e.textContent=S.pts)}
@@ -869,7 +896,7 @@ function openSecret(b,s){b.classList.add('melt');AU.magic();const r=b.getBoundin
 function nodeTap(k){const L=getLevel(k);const u=k[0]==='s'?true:isUnlocked(L.ch,L.idx);AU.x();
  if(!u){toast('Этот уровень пока заперт. Сначала пройди предыдущий.',I.lock.replace('currentColor','#f2d27e'));return}
  const p=S.prog[k];const sh=$('#sheet');
- sh.innerHTML=`<div class="num">${L.label}</div><div class="inf"><b>${L.name}</b><span>${L.n}×${L.n}${p?` · ${[1,2,3].map(z=>I.star(z<=p.stars)).join('')} · ${fmt(p.time)}`:' · ещё не пройден'}</span></div><button class="btn" id="sgo">Играть</button>`;
+ sh.innerHTML=`<div class="num">${L.label}</div><div class="inf"><b>${L.name}</b><span>${L.n}×${L.n}${p?` · ${[1,2,3].map(z=>I.star(z<=p.stars)).join('')} · ${fmt(p.time)}`:' · ещё не пройден'}</span></div><button class="btn" id="sgo">${S.runs&&S.runs[k]?'Продолжить':'Играть'}</button>`;
  sh.classList.add('on');$('#sgo').onclick=()=>startLevel(k)}
 
 /* ---------- GAME ---------- */
@@ -877,13 +904,15 @@ let G=null,paused=false;
 function pauseTimer(p){paused=p}
 const tokUrl=()=>IMG['t_'+(S.skin||'owl')];
 const RC=i=>[(i/G.n)|0,i%G.n];
-function startLevel(k){const L=getLevel(k);if($('#modal').classList.contains('on'))closeModal();if(window.czStop)czStop();paused=false;$('.frost').classList.remove('on');document.querySelectorAll('.dem').forEach(d=>d.remove());
+function startLevel(k,Lx){const L=Lx||getLevel(k);if($('#modal').classList.contains('on'))closeModal();if(window.czStop)czStop();paused=false;$('.frost').classList.remove('on');document.querySelectorAll('.dem').forEach(d=>d.remove());
  setBg(L.hard?HCH[L.ch].bg:CH[L.ch].bg);show('s-game');document.body.classList.toggle('hard',!!L.hard);const N=L.n*L.n;const cz={};(L.curse||[]).forEach(z=>cz[z]=1);const mh=cz.vow?1:3;
  G=Object.assign(L,{N,cz,curse:L.curse||[],maxH:mh,pal:[...Array(L.n).keys()],rot:0,noxAt:null,wand:false,stone:false,limit:L.n*60,st:new Uint8Array(N),hearts:mh,mistakes:0,felix:false,hist:[],elapsed:0,running:false,done:false,solSet:new Set(L.sol),patronus:false,lastTap:{i:-1,t:0},solver:makeSolver(L.n,L.reg,{chain:1}),tgt:-1});
  for(const g of L.givens)G.st[g]=2;
- buildGame();
+ const resumed=L.netGuest?false:runLoad();
+ buildGame();if(resumed){const t=$('#tm');if(t)t.textContent=fmt(G.cz.basilisk?Math.max(0,G.limit-G.elapsed):G.elapsed);if(G.felix){$('#frame').classList.add('felix');$('#fchip').style.display=''}}
  if(L.hard)banner(`${L.n}×${L.n}, без закреплённых сов. Проклятие: <b>${G.curse.map(z=>CZ[z].n).join(' + ')}</b>.`);else banner(L.givens.length?'Начни с закреплённой совы — она уже на своём месте. Одно нажатие ставит крестик, двойное — сажает сову.':`Рассади ${L.n} сов: по одной в каждой строке, столбце и области. Соседями — даже по диагонали — им быть нельзя.`);
- if(L.hard)czStart();S.last=k;save()}
+ if(resumed){const left=G.n-G.st.reduce((a,v)=>a+(v===2),0);banner(`С возвращением! Всё на своих местах — осталось рассадить: ${left}.`,'hint')}
+ if(L.netGuest)return;if(L.hard)czStart();S.last=k;save()}
 function buildGame(){const col=$('#s-game .col');
  col.innerHTML=`<div class="gtop lv"><button class="ib" id="gback" aria-label="К карте">${I.back}</button><div class="tt"><small>${G.num.toUpperCase()}</small><b>${G.name}</b></div><div class="hearts" id="hearts" aria-label="Сердца"></div></div>
  <div class="gbar lv"><span class="chip ${G.cz.basilisk?'stoneT':''}" id="tmchip">${G.cz.basilisk?CZI.basilisk.replace('<svg','<svg style="color:#9dffb8"'):I.glass.replace('currentColor','#f2d27e')}<span id="tm">${G.cz.basilisk?fmt(G.limit):'0:00'}</span></span>${G.hard?`<span class="chip czchips">${G.curse.map(z=>czBadge(z,20)).join('')}</span>`:''}<button class="chip wandchip" id="bspell" aria-label="Заклинание">${I.wand.replace('currentColor','#f2d27e')}</button><span class="chip" id="fchip" style="display:none">${I.felix}<span>Удача</span></span><span class="chip">${crestSVG(S.house||'G','').replace('<svg','<svg style="width:22px;height:26px"')}<span data-pts>${S.pts}</span></span></div>
@@ -893,7 +922,7 @@ function buildGame(){const col=$('#s-game .col');
  <div class="tools lv"><button class="gbtn" id="bundo" aria-label="Отменить" style="flex:none;width:52px">${I.undo}</button><button class="gbtn" id="brst" aria-label="Начать заново" style="flex:none;width:52px">${I.redo}</button>
  <button class="gbtn" id="bhint">${I.book}Подсказка</button></div>
  <div class="bonus lv" id="bons"></div>`;
- $('#gback').onclick=()=>{backToMap()};$('#bspell').onclick=spellBox;col.querySelectorAll('.czchips .czb').forEach(b=>b.onclick=()=>czInfo(b.dataset.cz));$('#bundo').onclick=undo;$('#brst').onclick=()=>{AU.x();startLevel(G.key)};$('#bhint').onclick=hint;
+ $('#gback').onclick=()=>{runSave(true);backToMap()};$('#bspell').onclick=spellBox;col.querySelectorAll('.czchips .czb').forEach(b=>b.onclick=()=>czInfo(b.dataset.cz));$('#bundo').onclick=undo;$('#brst').onclick=()=>{AU.x();runClear(G.key);startLevel(G.key)};$('#bhint').onclick=hint;
   renderBons();renderHearts();layoutBoard();bindBoard();$('#s-game .col').classList.toggle('disarmed',!!(G.cz.expel&&!G.wand))}
 function renderBons(){$('#bons').innerHTML=BON.slice(0,4).map(b=>`<button class="bon" data-b="${b.id}" aria-label="${b.n}"><span class="ic">${I[b.id]}</span>${b.n}<span class="ct ${S.inv[b.id]?'':'z'}">${S.inv[b.id]||'+'}</span></button>`).join('');
  $('#bons').querySelectorAll('.bon').forEach(e=>e.onclick=()=>useBonus(e.dataset.b,e))}
@@ -908,12 +937,24 @@ function layoutBoard(){if(!G)return;const bw=$('#bw');if(!bw)return;const r=bw.g
  sv.innerHTML=`<path d="${p}" stroke="rgba(15,8,2,.85)" stroke-width="${Math.max(4,cell*.13)}" stroke-linecap="round" fill="none" vector-effect="non-scaling-stroke"/><path d="${p}" stroke="url(#gGold)" stroke-width="${Math.max(1.8,cell*.055)}" stroke-linecap="round" fill="none" vector-effect="non-scaling-stroke"/><rect x="0" y="0" width="${n}" height="${n}" fill="none" stroke="#f0cf7a" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
  $('#pieces').innerHTML='';for(let i=0;i<G.N;i++)drawCell(i,true);czLayout()}
 function cellEl(i){return $('#cells').children[i]}
-function drawCell(i,init){const st=G.st[i],el=cellEl(i);if(!el)return;el.innerHTML=st===1?XSVG(0):st===3?XSVG(1):'';
+function drawCell(i,init){const st=G.st[i],el=cellEl(i);if(!el)return;if(!init)G.dirty=true;el.innerHTML=st===1?XSVG(0):st===3?XSVG(1):'';
  if(st===2&&init)addTok(i,G.givens.includes(i),true)}
 function tokPos(i){const [r,c]=RC(i),s=G.cell*.8;return{l:c*G.cell+(G.cell-s)/2,t:r*G.cell+(G.cell-s)/2,s}}
 function addTok(i,given,quiet){const p=tokPos(i);const t=h(`<div class="tok${given?' given':''}" data-i="${i}" style="left:${p.l}px;top:${p.t}px;width:${p.s}px;height:${p.s}px;background-image:url(${tokUrl()})"></div>`);if(quiet)t.style.animation='none';$('#pieces').appendChild(t);return t}
 function cellCenter(i){const [r,c]=RC(i);return boardScreen((c+.5)*G.cell,(r+.5)*G.cell)}
-function banner(t,cls){const b=$('#ban');if(!b)return;$('#bant').innerHTML=t;b.classList.remove('hint','bad');if(cls){void b.offsetWidth;b.classList.add(cls)}}
+function banner(t,cls){const b=$('#ban');if(!b)return;$('#bant').innerHTML=t;fitBan();b.classList.remove('hint','bad');if(cls){void b.offsetWidth;b.classList.add(cls)}}
+function fitBan(){const b=$('#ban'),t=$('#bant');if(!b||!t)return;t.style.fontSize='';let f=parseFloat(getComputedStyle(t).fontSize)||17;let k=0;while(b.scrollHeight>b.clientHeight+1&&f>12&&k++<20){f-=.5;t.style.fontSize=f+'px'}}
+/* ---- in-level progress ---- */
+function runSave(now){if(!G||G.done||!S.runs||G.netGuest)return;if(!G.dirty&&!now&&!(G.running&&curScreen==='s-game'))return;G.dirty=false;
+ S.runs[G.key]={st:Array.from(G.st).join(''),h:G.hearts,m:G.mistakes,e:Math.round(G.elapsed),f:G.felix?1:0,r:G.rot||0,l:G.limit,w:G.wand?1:0,cz:G.cz,t:Date.now()};
+ const ks=Object.keys(S.runs);if(ks.length>40){ks.sort((a,b)=>S.runs[a].t-S.runs[b].t).slice(0,ks.length-40).forEach(k=>delete S.runs[k])}
+ if(now){try{localStorage.setItem('sovudoku1',JSON.stringify(S))}catch(e){}}else save()}
+function runClear(k){if(S.runs&&S.runs[k]){delete S.runs[k];save()}}
+function runLoad(){const R=S.runs&&S.runs[G.key];if(!R||!R.st||R.st.length!==G.N)return false;
+ for(let i=0;i<G.N;i++){const v=+R.st[i];G.st[i]=v}G.hearts=Math.max(1,Math.min(G.maxH,R.h||1));G.mistakes=R.m||0;G.elapsed=R.e||0;G.felix=!!R.f;G.rot=R.r||0;if(R.l)G.limit=R.l;G.wand=!!R.w;if(R.cz)G.cz=Object.assign({},G.cz,R.cz);
+ if(G.elapsed>0)G.running=true;return true}
+setInterval(()=>runSave(false),1500);
+addEventListener('pagehide',()=>runSave(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)runSave(true)});
 function clearMarks(){document.querySelectorAll('.cell.foc,.cell.tgt,.cell.conf').forEach(e=>e.classList.remove('foc','tgt','conf'));G.tgt=-1}
 function startRun(){if(!G.running&&!G.done){G.running=true}}
 setInterval(()=>{if(G&&G.running&&!G.done&&!paused&&!document.hidden&&curScreen==='s-game'&&!$('#modal').classList.contains('on')){G.elapsed+=.25;if(G.cz.basilisk)hardTick();else{const t=$('#tm');if(t)t.textContent=fmt(G.elapsed)}}},250);
@@ -922,7 +963,7 @@ function bindBoard(){const b=$('#board');let drag=null;
  b.onpointerdown=e=>{if(G.done)return;AU.resume();const i=at(e);if(i<0)return;try{b.setPointerCapture(e.pointerId)}catch(_){}drag={s:i,moved:false,act:null,batch:[],seen:new Set([i])}};
  b.onpointermove=e=>{if(!drag)return;const i=at(e);if(i<0||drag.seen.has(i)&&i!==drag.s)return;if(i===drag.s&&!drag.moved)return;
   if(!drag.moved){drag.moved=true;drag.act=G.st[drag.s]===1?0:1;markCell(drag.s,drag.act,drag.batch)}if(!drag.seen.has(i)){drag.seen.add(i);markCell(i,drag.act,drag.batch)}};
- b.onpointerup=e=>{if(!drag)return;const d=drag;drag=null;if(d.moved){if(d.batch.length){G.hist.push(d.batch);startRun()}return}tap(d.s)};
+ b.onpointerup=e=>{if(!drag)return;const d=drag;drag=null;if(d.moved){if(d.batch.length){if(G.netGuest)NET.mark(d.batch,d.act);else{G.hist.push(d.batch);startRun()}}return}tap(d.s)};
  b.onpointercancel=()=>{drag=null}}
 function markCell(i,v,batch){const s=G.st[i];if(s>=2||s===v)return;batch.push([i,s]);G.st[i]=v;drawCell(i);if(v)AU.x()}
 function tap(i){const now=performance.now(),s=G.st[i];
@@ -948,7 +989,7 @@ function place(i){if(G.done||G.st[i]>=2)return;startRun();clearMarks();
   const t=addTok(i);t.classList.add('bad');setTimeout(()=>{t.remove();G.st[i]=3;drawCell(i)},950);
   conf.forEach(j=>cellEl(j).classList.add('conf'));cellEl(i).classList.add('conf');
   if(G.felix){G.felix=false;$('#frame').classList.remove('felix');$('#fchip').style.display='none';banner('Феликс Фелицис уберёг тебя от ошибки! Сердце цело.','hint');AU.magic();return}
-  G.hearts--;G.mistakes++;renderHearts(G.hearts);AU.wrong();vib([60,40,90]);
+  G.hearts--;G.mistakes++;G.dirty=true;renderHearts(G.hearts);AU.wrong();vib([60,40,90]);
   const f=$('#frame');f.classList.remove('shake');void f.offsetWidth;f.classList.add('shake');
   S.pts=Math.max(0,S.pts-5);save();refreshChips();floatText(x,y-20,`−5 очков ${HOUSES[S.house||'G'].dat}`,'#ff8a76');
   banner(conf.length?'Совы не терпят соседства: отсюда видна другая сова. '+pick(OOPS):'Здесь совы нет — логика подскажет почему. '+pick(OOPS),'bad');
@@ -964,7 +1005,7 @@ function hintText(s){const k=s.regs?s.regs.length:0,ln=s.kind==='row'?'стро�
  case 'confine':return `Все свободные клетки ${uName(s.unit).gen} лежат в ${uName(s.target).prep}. Значит, остальные клетки ${uName(s.target).gen} — не для сов.`;
  case 'block':return `Если посадить сову в подсвеченную клетку, у ${uName(s.unit).gen} не останется ни одного места. Значит, совы здесь нет.`;
  case 'group':return `${k} области целиком помещаются в ${k} ${ln}. Другим областям в этих ${s.kind==='row'?'строках':'столбцах'} места нет.`;
- case 'chain':return `Предположим, сова сидит в отмеченной клетке. Тогда по цепочке вынужденных ходов (подсвечены) у ${uName(s.unit).gen} не остаётся ни одного места — противоречие. Значит, здесь совы нет.`;
+ case 'chain':return `Допустим, сова в отмеченной клетке. Тогда по цепочке ходов (подсвечены) у ${uName(s.unit).gen} не остаётся мест — противоречие. Совы здесь нет.`;
  case 'group2':return `${k} ${ln} могут заполнить только ${k} области — остальные клетки этих областей вычёркиваю.`}return ''}
 function hint(){if(G.done)return;AU.resume();if(G.cz.expel&&!G.wand){banner('Палочка выбита — подсказки молчат. Призови её обратно…','bad');AU.wrong();return}clearMarks();if(G.cz.nox)noxLift(3400);const s=nextUseful();if(!s){banner('Учебник Принца молчит… Попробуй отменить пару крестиков.');return}
  AU.magic();banner(hintText(s),'hint');
@@ -990,7 +1031,7 @@ function quickBuy(B){modal(`<div class="panel dark" style="text-align:center"><b
 /* ---- win / lose ---- */
 const GRADE=['Тролль','Удовлетворительно','Выше ожидаемого','Превосходно'];
 function nextKey(k){if(k[0]==='s')return null;if(k[0]==='h'){const i=+k.slice(2);return i<99?hKey(i+1):null}const [c,i]=k.split('-').map(Number);if(i<13)return lvKey(c,i+1);if(c<6)return lvKey(c+1,0);return null}
-async function win(){G.done=true;G.running=false;clearMarks();const stars=G.maxH===1?(G.mistakes?1:3):Math.max(1,G.hearts);czStop();AU.win();vib([20,40,20,40,60]);
+async function win(){G.done=true;G.running=false;runClear(G.key);clearMarks();const stars=G.maxH===1?(G.mistakes?1:3):Math.max(1,G.hearts);czStop();AU.win();vib([20,40,20,40,60]);
  const toks=[...document.querySelectorAll('#pieces .tok')];toks.forEach((t,k)=>setTimeout(()=>{t.classList.remove('wig','cheer');void t.offsetWidth;t.classList.add('cheer');const i=+t.dataset.i;const [x,y]=cellCenter(i);FX.burst(x,y,{n:18,v1:4,col:pick(['#ffd75e','#fff3c4',HOUSES[S.house||'G'].c2])})},k*90));
  banner('Шалость удалась! Все совы на своих местах.','hint');
  const prev=S.prog[G.key],first=!prev;const mul=G.hard?2:1;const g=(first?10+stars*5:2+Math.max(0,stars-prev.stars)*5)*mul;const p=(first?stars*10:Math.max(0,stars-prev.stars)*10)*mul;
@@ -1019,7 +1060,7 @@ function chapterModal(c,then){const C=CH[c];const sk=SKINS.find(s=>s.how==='ch'&
  ${sk?`<div class="item" style="margin-top:12px;text-align:left"><div class="ii tk" style="background-image:url(${IMG['t_'+sk.id]})"></div><div class="id"><b>Новый облик: ${sk.n}</b><span>Выбери его в Лавке, чтобы рассаживать вместо сов.</span></div></div>`:''}
  <div class="mrow"><button class="btn" id="chgo">Продолжить</button></div></div>`);
  FX.burst(innerWidth/2,innerHeight*.3,{n:110,v1:10});$('#chgo').onclick=()=>{closeModal();then()}}
-function lose(){G.done=true;G.running=false;AU.chill();$('.frost').classList.add('on');
+function lose(){G.done=true;G.running=false;runClear(G.key);AU.chill();$('.frost').classList.add('on');
  [[-10,8],[70,4],[5,62],[72,58]].forEach(([x,y],k)=>{const d=h(`<div class="dem" style="left:${x}%;top:${y}%">${DEMENTOR}</div>`);document.body.appendChild(d);setTimeout(()=>d.classList.add('on'),200+k*300)});
  const pat=60;
  modal(`<div class="panel dark lose" style="background:linear-gradient(180deg,rgba(14,20,34,.92),rgba(6,9,16,.95));box-shadow:inset 0 0 0 1px rgba(170,200,255,.45),0 0 60px rgba(120,160,255,.25)"><h2>${G.cz.vow?'Обет нарушен…':'Дементоры близко…'}</h2><p>${G.cz.vow?'Непреложный обет не прощает ошибок. Холод пробирает до костей.':'Холод пробирает до костей. Все сердца потеряны.'}</p><p style="font-style:italic;opacity:.75">«Думай о самом счастливом воспоминании».</p>
@@ -1030,7 +1071,7 @@ function lose(){G.done=true;G.running=false;AU.chill();$('.frost').classList.add
  $('#lpat').onclick=()=>{if(S.gal<pat)return;S.gal-=pat;save();refreshChips();revive(1,'stag')};
  $('#lre').onclick=()=>startLevel(G.key);$('#lmap').onclick=()=>{closeModal();clearFrost();backToMap()}}
 function clearFrost(){$('.frost').classList.remove('on');document.querySelectorAll('.dem').forEach(d=>{d.classList.remove('on');setTimeout(()=>d.remove(),1500)})}
-function revive(hh,kind){closeModal();if(kind==='stag'){patronus();award('patronus')}else{phoenixFly()}setTimeout(clearFrost,600);G.done=false;G.hearts=Math.min(hh,G.maxH);renderHearts();if(G.cz.peeves||G.cz.poly)czStart();banner(kind==='stag'?'Серебряный олень разогнал дементоров! Продолжай.':'Слеза феникса исцелила тебя. Все сердца снова на месте.','hint')}
+function revive(hh,kind){closeModal();if(kind==='stag'){patronus();award('patronus')}else{phoenixFly()}setTimeout(clearFrost,600);G.done=false;G.hearts=Math.min(hh,G.maxH);G.dirty=true;renderHearts();if(G.cz.peeves||G.cz.poly)czStart();banner(kind==='stag'?'Серебряный олень разогнал дементоров! Продолжай.':'Слеза феникса исцелила тебя. Все сердца снова на месте.','hint')}
 
 /* ---------- ЗАПРЕТНАЯ СЕКЦИЯ (hard mode) ---------- */
 const HCH=[
@@ -1104,7 +1145,7 @@ async function renderShelf(dir){const c=hCh,C=HCH[c];setBg(C.bg);const sh=$('#sh
  if(c>0&&!hUnlocked(c*20))setTimeout(()=>toast(`Том ${C.rom} откроется, когда будет пройден предыдущий.`,I.lock.replace('currentColor','#f2d27e')),300)}
 function bookTap(i){const k=hKey(i);AU.x();if(!hUnlocked(i)){const b=$(`.book[data-i="${i}"]`);if(b){b.classList.remove('rattle');void b.offsetWidth;b.classList.add('rattle')}AU.bell(AU.m2f(50),AU.ctx?AU.ctx.currentTime:0,.5,.08);toast('Книга скована цепью. Сначала реши предыдущую задачу.',I.lock.replace('currentColor','#f2d27e'));return}
  const L=getLevel(k),p=S.prog[k],sh=$('#hsheet');
- sh.innerHTML=`<div class="num">${i+1}</div><div class="inf"><b>${L.name}</b><span>${L.n}×${L.n} · ${L.curse.map(z=>CZ[z].n).join(' + ')}${p?` · ${[1,2,3].map(z=>I.star(z<=p.stars)).join('')} · ${fmt(p.time)}`:''}</span></div><button class="btn" id="hgo">Открыть</button>`;
+ sh.innerHTML=`<div class="num">${i+1}</div><div class="inf"><b>${L.name}</b><span>${L.n}×${L.n} · ${L.curse.map(z=>CZ[z].n).join(' + ')}${p?` · ${[1,2,3].map(z=>I.star(z<=p.stars)).join('')} · ${fmt(p.time)}`:''}</span></div><button class="btn" id="hgo">${S.runs&&S.runs[k]?'Продолжить':'Открыть'}</button>`;
  sh.classList.add('on');$('#hgo').onclick=()=>startLevel(k)}
 function czInfo(z){modal(`<div class="panel dark" style="text-align:center"><button class="mx" data-close aria-label="Закрыть">×</button><div class="czbig">${CZI[z]}</div><h2 class="gt">${CZ[z].n}</h2><p style="font-size:18px">${CZ[z].d}</p><button class="btn" data-close style="width:100%;margin-top:6px">Понятно</button></div>`)}
 const MONSTER=`<svg viewBox="0 0 120 90"><defs><linearGradient id="mbk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b4a22"/><stop offset="1" stop-color="#2e1c0a"/></linearGradient></defs>
@@ -1165,11 +1206,11 @@ function peevesFly(){if($('#peeves'))return;const xs=[];for(let i=0;i<G.N;i++)if
  a.onfinish=()=>p.remove()}
 function hardTick(){if(!G||!G.cz.basilisk)return;const left=Math.max(0,G.limit-G.elapsed);const t=$('#tm');if(t)t.textContent=fmt(left);const ch=$('#tmchip');if(ch)ch.classList.toggle('low',left<60);
  if(left<=0&&!G.done)petrify()}
-function petrify(){G.done=true;G.running=false;G.stone=true;$('#board').classList.add('stone');AU.chill();vib([200,80,200]);
+function petrify(){G.done=true;G.running=false;G.stone=true;runClear(G.key);$('#board').classList.add('stone');AU.chill();vib([200,80,200]);
  setTimeout(()=>{modal(`<div class="panel dark lose" style="background:linear-gradient(180deg,rgba(14,26,18,.94),rgba(5,10,7,.96));box-shadow:inset 0 0 0 1px rgba(150,230,170,.45),0 0 60px rgba(60,200,110,.25)"><h2 style="color:#cfeccf">Окаменение!</h2><p>Ты встретился взглядом с василиском… в отражении. Время вышло, но ты жив.</p><p style="font-style:italic;opacity:.75">«Настойка из мандрагоры вернёт к жизни окаменевших».</p>
  <div class="list"><button class="btn" id="mand" style="width:100%" ${S.gal<80?'disabled':''}>Настойка мандрагоры · +3 минуты · 80 галлеонов</button>
  <div class="mrow" style="margin-top:0"><button class="gbtn" id="lmap">К полкам</button><button class="gbtn" id="lre">Заново</button></div></div></div>`,{clear:1});
- $('#mand').onclick=()=>{if(S.gal<80)return;S.gal-=80;save();refreshChips();closeModal();award('mandrake');G.limit=G.elapsed+180;G.done=false;G.stone=false;$('#board').classList.remove('stone');banner('Мадам Помфри дала настойку мандрагоры. Ещё 3 минуты!','hint');AU.magic()};
+ $('#mand').onclick=()=>{if(S.gal<80)return;S.gal-=80;save();refreshChips();closeModal();award('mandrake');G.limit=G.elapsed+180;G.done=false;G.dirty=true;G.stone=false;$('#board').classList.remove('stone');banner('Мадам Помфри дала настойку мандрагоры. Ещё 3 минуты!','hint');AU.magic()};
  $('#lre').onclick=()=>startLevel(G.key);$('#lmap').onclick=()=>{closeModal();backToMap()}},900)}
 function backToMap(){if(G&&G.hard)hardScreen(G.ch);else mapScreen(G?G.ch:0)}
 function hardChapterModal(c,then){const C=HCH[c];const sk={0:'ghost',2:'emerald',4:'goldowl'}[c];const S2=sk&&SKINS.find(s=>s.id===sk);if(sk&&!S.skins.includes(sk))S.skins.push(sk);save();AU.win();
@@ -1195,8 +1236,8 @@ function shop(){AU.resume();const draw=()=>{const c=$('#mcard');const top=c.scro
  <div class="sect">Аптека Малпеппера</div><div class="list">${BON.map(b=>`<div class="item"><div class="ii">${I[b.id]}</div><div class="id"><b>${b.n} <span style="display:inline;color:#f2d27e;font-size:16px">· у тебя ${S.inv[b.id]}</span></b><span>${b.d}</span></div><button class="btn" data-buy="${b.id}" ${S.gal<b.price?'disabled':''}>${I.coin}${b.price}</button></div>`).join('')}</div>
  <div class="sect">Волшебный зверинец</div><div class="list">${SKINS.map(s=>{const own=S.skins.includes(s.id),sel=S.skin===s.id;let act;
   if(sel)act=`<button class="gbtn" disabled>Выбрано</button>`;else if(own)act=`<button class="gbtn" data-skin="${s.id}">Выбрать</button>`;else if(s.how==='buy')act=`<button class="btn" data-bs="${s.id}" ${S.gal<s.price?'disabled':''}>${I.coin}${s.price}</button>`;else act=`<span style="width:44px;display:grid;place-items:center;color:#f2d27e">${I.lock.replace('<svg','<svg style="width:22px;height:22px"')}</span>`;
-  return `<div class="item ${own?'':'off'}"><div class="ii tk" style="background-image:url(${IMG['t_'+s.id]});${own?'':'filter:grayscale(.7) brightness(.6)'}"></div><div class="id"><b>${s.n}</b><span>${s.d}</span></div>${act}</div>`}).join('')}</div></div>`;
- c.scrollTop=top;c.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModal);
+  return `<div class="item ${own?'':'off'}"><div class="ii tk" style="background-image:url(${IMG['t_'+s.id]});${own?'':'filter:grayscale(.7) brightness(.6)'}"></div><div class="id"><b>${s.n}</b><span>${s.d}</span></div>${act}</div>`}).join('')}</div><button class="gbtn" data-close style="width:100%;margin-top:16px">Выйти из лавки</button></div>`;
+ c.scrollTop=top;c.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModal);fixMx(c);
  c.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const B=BON.find(x=>x.id===b.dataset.buy);if(S.gal<B.price)return;S.gal-=B.price;S.inv[B.id]++;save();refreshChips();AU.coin();const r=b.getBoundingClientRect();FX.burst(r.left+r.width/2,r.top+r.height/2,{n:16,v1:3});draw();if(curScreen==='s-game')renderBons()});
  c.querySelectorAll('[data-bs]').forEach(b=>b.onclick=()=>{const s=SKINS.find(x=>x.id===b.dataset.bs);if(S.gal<s.price)return;S.gal-=s.price;S.skins.push(s.id);S.skin=s.id;save();refreshChips();AU.magic();draw();skinChanged()});
  c.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{S.skin=b.dataset.skin;save();AU.place();draw();skinChanged()})};
@@ -1209,10 +1250,10 @@ function achievements(){const got=ACH.filter(a=>S.ach[a[0]]).length;const tot3=O
 /* ---------- SETTINGS / RULES ---------- */
 function settings(){const T=(k,t,s)=>`<div class="tog"><span>${t}${s?`<small>${s}</small>`:''}</span><button class="sw ${S.set[k]?'on':''}" data-t="${k}" aria-label="${t}"></button></div>`;
  const c=modal(`<div class="panel dark"><button class="mx" data-close aria-label="Закрыть">×</button><h2 class="gt">Опции</h2>
- <div style="margin-top:10px">${T('sound','Звуки')}${T('music','Музыка','Волшебный вальс свечей')}${T('autoX','Автокрестики','Вычёркивать клетки вокруг верной совы')}${T('vib','Вибрация')}</div>
+ <div style="margin-top:10px">${T('sound','Звуки')}${T('music','Музыка','Волшебный вальс свечей')}${T('autoX','Автокрестики','Вычёркивать клетки вокруг верной совы')}${T('vib','Вибрация')}${T('online','Совятня онлайн','Показываться другим игрокам и получать приглашения')}</div>
  <div class="list"><button class="gbtn" id="orules">Как играть</button><button class="gbtn" id="ospell">Произнести заклинание</button><button class="gbtn" id="osort">Снова надеть Шляпу</button><button class="gbtn" id="oreset" style="color:#ff9a86">Обливиэйт — стереть прогресс</button></div>
  ${canStore?'':'<p class="sub">Прогресс хранится только до закрытия страницы: браузер запретил сохранение.</p>'}</div>`);
- c.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const k=b.dataset.t;S.set[k]=S.set[k]?0:1;save();b.classList.toggle('on',!!S.set[k]);AU.resume();if(k==='music')AU.music(!!S.set.music);AU.x()});
+ c.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const k=b.dataset.t;S.set[k]=S.set[k]?0:1;save();b.classList.toggle('on',!!S.set[k]);AU.resume();if(k==='music')AU.music(!!S.set.music);if(k==='online')NET.setOnline(!!S.set.online);AU.x()});
  $('#orules').onclick=rules;$('#ospell').onclick=spellBox;$('#osort').onclick=()=>{closeModal();sorting()};$('#oreset').onclick=()=>cast('обливиэйт')}
 function miniSVG(kind){const s=15,P=['#9a3a32','#c4973a','#3f7a55','#3a5c94','#6e5196'];const R='AABBBAABCCDABCCDDECCDDEEE'.replace(/E/g,'E');let o=`<svg viewBox="0 0 75 75">`;
  for(let i=0;i<25;i++){const r=(i/5)|0,c=i%5;o+=`<rect x="${c*s}" y="${r*s}" width="${s}" height="${s}" fill="${P[(R.charCodeAt(i)-65)%5]}" stroke="rgba(0,0,0,.3)" stroke-width=".5"/>`}
@@ -1311,4 +1352,205 @@ function boot(){load();document.body.insertAdjacentHTML('afterbegin',DEFS);docum
  $('#snitch').innerHTML=SNITCH;
  if(!S.seen.intro||!S.house)intro();else menu()}
 boot();
+
+/* ---------- СОВЯТНЯ: онлайн-режим (совместная игра) ---------- */
+const NS='sovudoku-hp-x7k2/v1/';
+const BROKERS=[{url:'wss://public.cloud.shiftr.io:443',u:'public',p:'public'},{url:'wss://broker.emqx.io:8084/mqtt'},{url:'wss://broker.hivemq.com:8884/mqtt'}];
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const myName=()=>(S.name||'').trim().slice(0,18)||'Волшебник';
+/* minimal MQTT 3.1.1 over WebSocket (QoS 0), several public relays at once (messages deduplicated) */
+const MQ={conns:[],ready:false,subs:new Set(),want:false,enc:new TextEncoder(),dec:new TextDecoder(),onmsg:null,onstate:null,onmore:null,seen:new Map(),
+ str(s){const b=this.enc.encode(s);return [b.length>>8,b.length&255,...b]},
+ len(n){const o=[];do{let d=n%128;n=Math.floor(n/128);if(n>0)d|=128;o.push(d)}while(n>0);return o},
+ send(c,h,body){if(!c.ws||c.ws.readyState!==1)return false;try{c.ws.send(new Uint8Array([h,...this.len(body.length),...body]));return true}catch(e){return false}},
+ start(){this.want=true;if(!this.conns.length)this.conns=BROKERS.map(B=>({url:B.url,cr:B.u?[...this.str(B.u),...this.str(B.p)]:null,ws:null,ok:false,buf:new Uint8Array(0),fails:0,pid:1,ping:null,rt:null}));this.conns.forEach(c=>{if(!c.ws)this.open(c)})},
+ stop(){this.want=false;this.conns.forEach(c=>{clearTimeout(c.rt);clearInterval(c.ping);if(c.ws){try{this.send(c,0xE0,[]);c.ws.close()}catch(e){}}c.ws=null;c.ok=false});this.upd()},
+ upd(){const r=this.conns.some(c=>c.ok);if(r!==this.ready){this.ready=r;if(this.onstate)this.onstate(r)}},
+ open(c){if(!this.want||c.ws)return;let ws;try{ws=new WebSocket(c.url,'mqtt')}catch(e){this.retry(c);return}
+  c.ws=ws;ws.binaryType='arraybuffer';c.buf=new Uint8Array(0);const to=setTimeout(()=>{if(!c.ok){try{ws.close()}catch(e){}}},10000);
+  ws.onopen=()=>{const cid='sv'+String(S.pid||'').slice(1,9)+Math.random().toString(36).slice(2,7);this.send(c,0x10,[0,4,77,81,84,84,4,c.cr?0xC2:2,0,60,...this.str(cid),...(c.cr||[])])};
+  ws.onmessage=e=>{if(c.ws!==ws)return;const a=new Uint8Array(e.data),b=new Uint8Array(c.buf.length+a.length);b.set(c.buf);b.set(a,c.buf.length);c.buf=b;this.parse(c)};
+  ws.onclose=()=>{clearTimeout(to);if(c.ws!==ws)return;clearInterval(c.ping);const was=c.ok;c.ok=false;c.ws=null;if(!was)c.fails++;else c.fails=0;this.upd();this.retry(c)};
+  ws.onerror=()=>{}},
+ retry(c){if(!this.want)return;clearTimeout(c.rt);const d=Math.min(60000,2500*Math.pow(2,Math.min(c.fails,5)))*(0.7+Math.random()*0.6);c.rt=setTimeout(()=>this.open(c),c.fails?d:1500)},
+ parse(c){for(;;){const b=c.buf;if(b.length<2)return;let m=1,v=0,k=1,d;do{if(k>=b.length)return;d=b[k++];v+=(d&127)*m;m*=128}while(d&128);if(b.length<k+v)return;
+  const h=b[0],body=b.subarray(k,k+v);c.buf=b.slice(k+v);const t=h>>4;
+  if(t===2){if(body[1]===0){c.ok=true;c.fails=0;clearInterval(c.ping);c.ping=setInterval(()=>this.send(c,0xC0,[]),25000);for(const s of this.subs)this.sub1(c,s);const first=!this.ready;this.upd();if(!first&&this.onmore)this.onmore()}else{try{c.ws.close()}catch(e){}}}
+  else if(t===3){const tl=(body[0]<<8)|body[1];const topic=this.dec.decode(body.subarray(2,2+tl));let p=2+tl;if((h>>1)&3)p+=2;let msg=null;try{msg=JSON.parse(this.dec.decode(body.subarray(p)))}catch(e){}
+   if(msg&&typeof msg==='object'){const q=msg._q;if(q){if(this.seen.has(q))continue;this.seen.set(q,1);if(this.seen.size>800){const it=this.seen.keys();for(let z=0;z<300;z++)this.seen.delete(it.next().value)}}
+    if(this.onmsg)try{this.onmsg(topic,msg)}catch(e){console.warn(e)}}}}},
+ sub1(c,t){const id=c.pid++&65535||(c.pid=2,1);this.send(c,0x82,[id>>8,id&255,...this.str(t),0])},
+ sub(t){if(this.subs.has(t))return;this.subs.add(t);this.conns.forEach(c=>{if(c.ok)this.sub1(c,t)})},
+ unsub(t){if(!this.subs.delete(t))return;this.conns.forEach(c=>{if(c.ok){const id=c.pid++&65535||(c.pid=2,1);this.send(c,0xA2,[id>>8,id&255,...this.str(t)])}})},
+ pub(t,o){if(!this.ready)return false;o._q=Math.random().toString(36).slice(2,11);const body=[...this.str(t),...this.enc.encode(JSON.stringify(o))];let k=false;this.conns.forEach(c=>{if(c.ok&&this.send(c,0x30,body))k=true});return k}};
+/* ---- presence, rooms ---- */
+const NET={role:null,room:null,host:null,mem:{},peers:{},last:0,pend:{},sT:null,wait:false,conn:false,
+ me(){return{id:S.pid,n:myName(),h:S.house||'G'}},
+ status(){return this.role==='host'?'host':this.role==='guest'?'guest':'free'},
+ setOnline(on){if(on){MQ.start()}else{this.leave(true);this.pub('lobby',{t:'bye',id:S.pid});setTimeout(()=>MQ.stop(),150);this.peers={};this.ui()}},
+ pub(t,o){return MQ.pub(NS+t,o)},
+ presence(){this.pub('lobby',Object.assign({t:'pr',s:this.status(),lv:(curScreen==='s-game'&&G)?String(G.name).slice(0,40):'',with:this.role==='guest'&&this.host?this.host.n:''},this.me()))},
+ online(){const now=Date.now();return Object.values(this.peers).filter(p=>now-p.seen<45000&&p.id!==S.pid)},
+ onstate(ok){this.conn=ok;if(ok){MQ.sub(NS+'lobby');MQ.sub(NS+'u/'+S.pid);this.pub('lobby',Object.assign({t:'hi'},this.me()));this.presence();
+   if(this.role==='host')MQ.sub(NS+'r/'+this.room+'/a');if(this.role==='guest'){MQ.sub(NS+'r/'+this.room+'/s');this.toHost({t:'join'})}
+   const j=pendingJoin;if(j){pendingJoin=null;this.join(j.room,{id:j.host,n:'хозяин',h:'G'})}}this.ui()},
+ onmsg(topic,m){const T=topic.slice(NS.length);if(m.id===S.pid&&T==='lobby')return;
+  if(T==='lobby'){if(typeof m.id!=='string')return;if(m.t==='hi'){setTimeout(()=>this.presence(),300+Math.random()*1200);this.peers[m.id]=Object.assign(this.peers[m.id]||{},{id:m.id,n:m.n,h:m.h,s:'free',seen:Date.now()})}
+   else if(m.t==='pr')this.peers[m.id]={id:m.id,n:String(m.n||'').slice(0,18),h:HOUSES[m.h]?m.h:'G',s:m.s,lv:m.lv,with:m.with,seen:Date.now()};
+   else if(m.t==='bye')delete this.peers[m.id];this.ui();return}
+  if(T==='u/'+S.pid){if(m.t==='inv')this.gotInvite(m);else if(m.t==='dec'){toast(`<b>${esc(m.n)}</b> пока не может: ${m.busy?'уже играет с кем-то':'отказался(ась) — сова вернулась ни с чем'}.`,I.owlI.replace('currentColor','#f2d27e'))}return}
+  if(this.role==='host'&&T==='r/'+this.room+'/a')return this.hostGot(m);
+  if(this.role==='guest'&&T==='r/'+this.room+'/s')return this.guestGot(m)},
+ /* host */
+ ensureRoom(){if(this.role==='host')return;if(this.role==='guest')this.leave(true);this.role='host';this.room=Math.random().toString(36).slice(2,8);this.mem={};MQ.sub(NS+'r/'+this.room+'/a');this.presence();this.ui()},
+ invite(p){if(!this.conn){toast('Нет связи с Совятней. Проверь интернет.');return}this.ensureRoom();
+  this.pub('u/'+p.id,Object.assign({t:'inv',room:this.room,lv:(curScreen==='s-game'&&G)?String(G.num+' · '+G.name):''},this.me()));
+  owlFly();toast(`Сова с приглашением летит к <b>${esc(p.n)}</b>…`,I.owlI.replace('currentColor','#f2d27e'))},
+ link(){this.ensureRoom();return location.href.split('#')[0]+'#join='+this.room+'.'+S.pid},
+ toRoom(o){o.by=S.pid;return this.pub('r/'+this.room+'/s',o)},
+ hostGot(m){const id=m.by;if(typeof id!=='string')return;const now=Date.now();
+  if(m.t==='join'){const isNew=!this.mem[id];this.mem[id]={id,n:String(m.n||'Гость').slice(0,18),h:HOUSES[m.h]?m.h:'G',seen:now};if(isNew){toast(`<b>${esc(this.mem[id].n)}</b> влетает в окно! Играем вместе.`,avatar(this.mem[id],30));AU.magic()}
+   this.sendMem();if(curScreen==='s-game'&&G&&!G.netGuest)this.sendLevel();else this.toRoom({t:'idle',n:myName()});this.presence();this.ui();return}
+  const mm=this.mem[id];if(!mm)return;mm.seen=now;
+  if(m.t==='here')return;
+  if(m.t==='leave'){delete this.mem[id];toast(`<b>${esc(mm.n)}</b> покинул(а) игру.`);this.sendMem();this.ui();return}
+  if(m.t==='act'&&curScreen==='s-game'&&G&&!G.netGuest){this.actor=mm.id;try{this.applyAct(m,mm)}finally{this.actor=null}}},
+ applyAct(m,mm){const i=m.i|0;if(G.done&&m.a!=='hint')return;AU.resume();
+  if(m.a==='x'&&i>=0&&i<G.N){const s=G.st[i];if(s>=2)return;const batch=[[i,s]];G.st[i]=s===1?0:1;drawCell(i);if(G.st[i])AU.x();G.hist.push(batch);startRun();ringAt(i,mm);this.toRoom({t:'tap',i,w:mm.id})}
+  else if(m.a==='place'&&i>=0&&i<G.N){if(G.st[i]<2){if(m.prev===0||m.prev===1)G.st[i]=m.prev;ringAt(i,mm);place(i)}}
+  else if(m.a==='mark'&&Array.isArray(m.c)){const v=m.v?1:0,batch=[];m.c.slice(0,200).forEach(j=>{j|=0;if(j>=0&&j<G.N)markCell(j,v,batch)});if(batch.length){G.hist.push(batch);startRun()}}
+  else if(m.a==='undo')undo();else if(m.a==='hint')hint();else if(m.a==='bonus'&&BON.some(b=>b.id===m.b))useBonus(m.b)},
+ sendMem(){this.toRoom({t:'mem',host:this.me(),list:Object.values(this.mem).map(x=>({id:x.id,n:x.n,h:x.h}))})},
+ spec(){const L=G;return{key:L.key,n:L.n,r:L.reg.map(g=>String.fromCharCode(65+g)).join(''),s:L.sol.map(i=>i%L.n),g:L.givens,c:L.curse||[],name:L.name,num:L.num,hard:!!L.hard,ch:L.ch,label:L.label,q:L.q||null}},
+ snap(){this.sq=Math.max(Date.now(),(this.sq||0)+1);return{t:'snap',sq:this.sq,st:Array.from(G.st).join(''),h:G.hearts,mh:G.maxH,m:G.mistakes,e:Math.round(G.elapsed),run:G.running,rot:G.rot||0,pal:G.pal,lim:G.limit,wand:G.wand,cz:G.cz,done:G.done,key:G.key}},
+ sendLevel(){if(this.role!=='host'||!Object.keys(this.mem).length)return;this.toRoom({t:'lvl',L:this.spec(),snap:this.snap()})},
+ sched(){if(this.role!=='host'||!Object.keys(this.mem).length||!G||G.netGuest)return;if(this.sT)return;this.sT=setTimeout(()=>{this.sT=null;if(curScreen==='s-game'&&G)this.toRoom(this.snap())},70)},
+ /* guest */
+ gotInvite(m){if(typeof m.room!=='string'||typeof m.id!=='string')return;const H=HOUSES[m.h]?m.h:'G';const from={id:m.id,n:String(m.n||'Волшебник').slice(0,18),h:H};
+  if(this.role==='guest'&&this.host&&this.host.id===from.id)return;
+  if(this.role){this.pub('u/'+from.id,Object.assign({t:'dec',busy:1},this.me()));return}
+  owlFly(true);AU.magic();vib([30,40,30]);
+  modal(`<div class="parch letter2"><div class="seal2" style="background:radial-gradient(circle at 40% 35%,${HOUSES[H].c1},#2a0a06 80%)">${HOUSES[H].L}</div><div class="kick" style="text-align:center;letter-spacing:.3em;font-family:'Cormorant SC',serif;font-weight:700;color:#7a4a12">СОВИНАЯ ПОЧТА</div>
+  <h2 style="text-align:center;font-size:28px;margin:4px 0">Приглашение</h2><p class="hand" style="font-size:26px;text-align:center;margin:6px 0;color:#3a2208">«Сыграем вместе?»</p>
+  <p style="font-size:18px;text-align:center;margin:0">${avatar(from,26)} <b>${esc(from.n)}</b>, ${HOUSES[H].n}, зовёт тебя решать загадки вместе${m.lv?` — сейчас на уровне «${esc(m.lv)}»`:''}. Вы будете видеть одно поле и ходить одновременно.</p>
+  <div class="mrow"><button class="gbtn" id="ivno">Не сейчас</button><button class="btn" id="ivok">Влететь в окно</button></div></div>`);
+  $('#ivno').onclick=()=>{this.pub('u/'+from.id,Object.assign({t:'dec'},this.me()));closeModal()};$('#ivok').onclick=()=>{closeModal();this.join(m.room,from)}},
+ join(room,from){if(this.role==='host')this.leave(true);if(this.role==='guest'&&this.room!==room)this.leave(true);this.role='guest';this.room=room;this.host=from;this.last=Date.now();this.mem={};
+  MQ.sub(NS+'r/'+room+'/s');this.toHost({t:'join'});this.presence();this.ui();
+  this.waitModal(`Подключаемся к игре <b>${esc(from.n)}</b>…`)},
+ toHost(o){Object.assign(o,{by:S.pid,n:myName(),h:S.house||'G'});return this.pub('r/'+this.room+'/a',o)},
+ act(o){o.t='act';this.toHost(o)},
+ mark(batch,v){const now=performance.now();batch.forEach(([i])=>this.pend[i]=now);this.act({a:'mark',c:batch.map(x=>x[0]),v})},
+ guestGot(m){this.last=Date.now();if(m.by&&this.host&&m.by!==this.host.id)return;
+  if(m.t==='mem'){if(m.host&&this.host){this.host.n=String(m.host.n||this.host.n).slice(0,18);this.host.h=HOUSES[m.host.h]?m.host.h:this.host.h}this.mem={};(m.list||[]).forEach(x=>{if(x&&x.id)this.mem[x.id]={id:x.id,n:String(x.n||'').slice(0,18),h:HOUSES[x.h]?x.h:'G'}});this.ui();return}
+  if(m.t==='lvl'&&m.L){if($('#modal').classList.contains('on'))closeModal();clearFrost();this.wait=false;const L=buildL(m.L);if(!L)return;this.lsq=0;startLevel(L.key,L);this.applySnap(m.snap);this.ui();
+   toast(`Играем уровень <b>${esc(this.host.n)}</b>: ${esc(L.name)}`,avatar(this.host,30));return}
+  if(m.t==='idle'){if(curScreen==='s-game'&&G&&G.netGuest)G.done=true;this.waitModal(`<b>${esc(this.host.n)}</b> выбирает уровень…`);return}
+  if(m.t==='end'){toast(`<b>${esc(this.host?this.host.n:'Хозяин')}</b> закрыл(а) игру.`);this.reset();if(curScreen==='s-game'&&G&&G.netGuest){closeModal();menu()}return}
+  if(m.t==='hb')return;
+  if(!G||!G.netGuest||curScreen!=='s-game')return;
+  if(m.t==='snap'){if(m.key&&m.key!==G.key)return;this.applySnap(m)}
+  else if(m.t==='fx')this.fx(m);
+  else if(m.t==='ban')_banner(String(m.x||'').slice(0,400).replace(/<(?!\/?(b|i|br)>)[^>]*>/g,''),m.c==='hint'||m.c==='bad'?m.c:undefined);
+  else if(m.t==='hint'){clearMarks();(m.f||[]).forEach(i=>{const e=cellEl(i);if(e)e.classList.add('foc')});if(m.g>=0&&cellEl(m.g))cellEl(m.g).classList.add('tgt');AU.magic();setTimeout(()=>document.querySelectorAll('.cell.foc').forEach(e=>e.classList.remove('foc')),3200)}
+  else if(m.t==='tap'){const w=m.w||m.by;const p=this.mem[w]||(this.host&&w===this.host.id?this.host:null);if(p&&w!==S.pid)ringAt(m.i|0,p)}
+  else if(m.t==='win')this.guestWin(m);
+  else if(m.t==='lose'||m.t==='stone'){G.done=true;G.running=false;if(m.t==='stone')$('#board').classList.add('stone');else{AU.chill();$('.frost').classList.add('on')}
+   this.waitModal(m.t==='stone'?`Окаменение! Время вышло. <b>${esc(this.host.n)}</b> решает, что делать…`:`Все сердца потеряны… <b>${esc(this.host.n)}</b> решает, что делать.`,true)}},
+ applySnap(m){if(!m||!G||!G.netGuest||typeof m.st!=='string'||m.st.length!==G.N)return;if(m.sq){if(m.sq<=(this.lsq||0))return;this.lsq=m.sq}const now=performance.now();
+  for(let i=0;i<G.N;i++){const v=+m.st[i];if(G.st[i]===v)continue;if(this.pend[i]&&now-this.pend[i]<900&&v<2&&G.st[i]<2)continue;const was=G.st[i];G.st[i]=v;_drawCell(i);
+   if(v===2&&!$(`.tok[data-i="${i}"]`))addTok(i,G.givens.includes(i),true);if(was===2&&v!==2){const t=$(`.tok[data-i="${i}"]`);if(t)t.remove()}}
+  if(m.mh)G.maxH=m.mh;if(G.hearts!==m.h){G.hearts=m.h;renderHearts()}G.mistakes=m.m||0;G.elapsed=m.e||0;G.running=!!m.run;if(m.lim)G.limit=m.lim;
+  if(m.cz&&typeof m.cz==='object')G.cz=Object.assign({},m.cz);
+  if((m.rot|0)!==(G.rot|0)){G.rot=m.rot|0;czRot()}
+  if(Array.isArray(m.pal)&&m.pal.length===G.n&&m.pal.join()!==G.pal.join()){G.pal=m.pal.map(x=>x|0);for(let i=0;i<G.N;i++)cellEl(i).style.setProperty('--c',czColor(i))}
+  G.wand=!!m.wand;$('#s-game .col').classList.toggle('disarmed',!!(G.cz.expel&&!G.wand));
+  const t=$('#tm');if(t)t.textContent=fmt(G.cz.basilisk?Math.max(0,G.limit-G.elapsed):G.elapsed);
+  if(G.done&&!m.done&&this.wait){this.wait=false;closeModal();clearFrost();$('#board').classList.remove('stone')}G.done=!!m.done},
+ fx(m){const i=m.i|0;if(i<0||i>=G.N)return;const p=this.mem[m.who]||(this.host&&m.who===this.host.id?this.host:null);
+  if(m.ok){if(G.st[i]!==2){G.st[i]=2;_drawCell(i);addTok(i)}AU.place();vib(12);const [x,y]=cellCenter(i);FX.burst(x,y,{n:22,v1:3.5,s1:14});const g=G.reg[i];for(let j=0;j<G.N;j++)if(G.reg[j]===g){const e=cellEl(j);e.classList.remove('claim');void e.offsetWidth;e.classList.add('claim')}}
+  else{const t=addTok(i);t.classList.add('bad');setTimeout(()=>{t.remove();if(G.st[i]<2){G.st[i]=3;_drawCell(i)}},950);AU.wrong();vib([60,40,90]);const f=$('#frame');f.classList.remove('shake');void f.offsetWidth;f.classList.add('shake')}
+  if(p&&m.who!==S.pid)ringAt(i,p)},
+ guestWin(m){G.done=true;G.running=false;clearMarks();AU.win();const stars=Math.max(1,Math.min(3,m.s|0));
+  document.querySelectorAll('#pieces .tok').forEach((t,k)=>setTimeout(()=>{t.classList.remove('wig','cheer');void t.offsetWidth;t.classList.add('cheer')},k*90));
+  const first=!S.seen['co_'+G.key];S.seen['co_'+G.key]=1;const g=first?10:3;S.gal+=g;S.pts+=first?5:0;save();refreshChips();award('coop');
+  setTimeout(()=>{modal(`<div class="parch win"><div class="kick">СОВМЕСТНАЯ ИГРА · ${esc(G.num).toUpperCase()}</div><h2>${GRADE[stars]}</h2>
+  <div class="wstars">${[1,2,3].map((z,k)=>I.star(z<=stars).replace('<svg',`<svg style="animation-delay:${.25+k*.22}s"`)).join('')}</div>
+  <div class="wstats"><div>${fmt(m.e||0)}<small>время</small></div><div>+${g}<small>галлеонов за помощь</small></div><div>${avatar(this.host,30)}<small>${esc(this.host.n)}</small></div></div>
+  <div class="quote">«Я не беспокоюсь, Гарри. Я с тобой.»<small>— Дамблдор</small></div>
+  <div class="mrow"><button class="gbtn" id="cwl">Покинуть</button><button class="btn" id="cww">Ждать следующий</button></div></div>`);
+  $('#cwl').onclick=()=>{closeModal();this.leave();menu()};$('#cww').onclick=()=>{closeModal();this.waitModal(`Ждём, пока <b>${esc(this.host.n)}</b> откроет следующий уровень…`)}},1400)},
+ waitModal(txt,keepBoard){this.wait=true;modal(`<div class="panel dark" style="text-align:center"><div class="owlwait">${I.owlI}</div><p style="font-size:19px;margin:8px 0 14px">${txt}</p><button class="gbtn" id="wleave" style="width:100%">Покинуть совместную игру</button></div>`,{clear:keepBoard});
+  $('#wleave').onclick=()=>{closeModal();this.leave();menu()}},
+ leave(silent){if(this.role==='guest'){this.toHost({t:'leave'});MQ.unsub(NS+'r/'+this.room+'/s');if(!silent)toast('Ты вернулся к своим урокам.')}
+  else if(this.role==='host'){this.toRoom({t:'end'});MQ.unsub(NS+'r/'+this.room+'/a')}this.reset()},
+ reset(){if(this.role==='guest'&&this.room)MQ.unsub(NS+'r/'+this.room+'/s');if(this.role==='host'&&this.room)MQ.unsub(NS+'r/'+this.room+'/a');this.role=null;this.room=null;this.host=null;this.mem={};this.wait=false;this.presence();this.ui()},
+ ui(){const n=this.online().length;document.querySelectorAll('[data-owl]').forEach(e=>{e.innerHTML=`<i class="dot ${this.conn?'on':''}"></i>${n}`});
+  const nc=$('#netchip');if(nc){const ps=this.role==='host'?Object.values(this.mem):this.role==='guest'?[this.host,...Object.values(this.mem).filter(x=>x.id!==S.pid)]:[];nc.innerHTML=ps.length?ps.filter(Boolean).slice(0,4).map(p=>avatar(p,24)).join(''):I.owlI.replace('currentColor','#f2d27e');nc.classList.toggle('co',ps.length>0)}
+  if($('#owlery'))renderOwlery()}};
+let pendingJoin=null;
+MQ.onmsg=(t,m)=>NET.onmsg(t,m);MQ.onstate=ok=>NET.onstate(ok);MQ.onmore=()=>NET.presence();
+function buildL(sp){try{const n=sp.n|0;if(n<4||n>16||typeof sp.r!=='string'||sp.r.length!==n*n||!Array.isArray(sp.s)||sp.s.length!==n)return null;
+ return{key:String(sp.key),n,reg:[...sp.r].map(c=>Math.max(0,Math.min(n-1,c.charCodeAt(0)-65))),sol:sp.s.map((c,r)=>r*n+(c|0)),givens:(sp.g||[]).map(x=>x|0),curse:(sp.c||[]).filter(z=>CZ[z]),name:String(sp.name||'').slice(0,60),num:String(sp.num||'').slice(0,60),hard:!!sp.hard,ch:Math.max(0,Math.min(sp.hard?4:6,sp.ch|0)),label:String(sp.label||''),q:Array.isArray(sp.q)?sp.q.map(String):null,netGuest:true}}catch(e){return null}}
+function avatar(p,sz=28){const H=HOUSES[(p&&p.h)]||HOUSES.G;const L=esc(((p&&p.n)||'?').trim()[0]||'?').toUpperCase();return `<span class="ava" style="width:${sz}px;height:${sz}px;font-size:${sz*.55}px;background:radial-gradient(circle at 40% 30%,${H.c1},#120804 90%);box-shadow:0 0 0 1.5px ${H.c2}">${L}</span>`}
+function ringAt(i,p){if(!G||i<0||i>=G.N||!$('#pieces'))return;const H=HOUSES[p.h]||HOUSES.G;const tp=tokPos(i),s=G.cell;const e=h(`<div class="pring" style="left:${tp.l-(s*.1)}px;top:${tp.t-(s*.1)}px;width:${s}px;height:${s}px;--rc:${H.c1};--rc2:${H.c2}"><span>${esc(p.n)}</span></div>`);$('#pieces').appendChild(e);setTimeout(()=>e.remove(),1300)}
+function owlFly(toMe){const e=h(`<div class="fly" style="width:64px;height:64px;border-radius:50%;background:url(${IMG.t_owl}) center/cover;box-shadow:0 0 0 2px #f2d27e,0 0 26px rgba(255,220,140,.7)"></div>`);document.body.appendChild(e);
+ const a=toMe?[{transform:`translate(${innerWidth+80}px,${innerHeight*.1}px) scale(.6)`},{transform:`translate(${innerWidth/2-32}px,${innerHeight*.35}px) scale(1.2)`}]:[{transform:`translate(${innerWidth/2-32}px,${innerHeight*.6}px) scale(1)`},{transform:`translate(${innerWidth+80}px,${-80}px) scale(.5)`}];
+ e.animate(a,{duration:1300,easing:'ease-in-out'}).onfinish=()=>e.remove()}
+/* ---- Совятня UI ---- */
+function owlery(){modal(`<div class="panel dark" id="owlery"></div>`);renderOwlery()}
+function renderOwlery(){const c=$('#owlery');if(!c)return;const ps=NET.online().sort((a,b)=>(a.s==='free'?0:1)-(b.s==='free'?0:1));const inRoom=NET.role;
+ const st=!S.set.online?'Совятня выключена в опциях':NET.conn?`На связи · в замке ${ps.length?ps.length+' '+(ps.length===1?'волшебник':ps.length<5?'волшебника':'волшебников'):'пока никого'}`:'Подключаемся к совятне…';
+ const members=NET.role==='host'?Object.values(NET.mem):NET.role==='guest'?[NET.host,...Object.values(NET.mem).filter(x=>x.id!==S.pid)].filter(Boolean):[];
+ c.innerHTML=`<button class="mx" data-close aria-label="Закрыть">×</button><h2 class="gt">Совятня</h2><div class="sub"><i class="dot ${NET.conn?'on':''}"></i> ${st}</div>
+ <div class="tog" style="margin-top:6px"><span>Твоё имя<small>Так тебя увидят другие игроки</small></span><input class="spell" id="oname" maxlength="18" value="${esc(S.name||'')}" placeholder="Волшебник" style="width:150px;margin:0;font-size:17px;padding:8px 10px"></div>
+ ${inRoom?`<div class="sect">${NET.role==='host'?'С тобой играют':'Ты в гостях у'}</div><div class="list">${members.length?members.map(p=>`<div class="item"><div class="ii" style="background:none;box-shadow:none">${avatar(p,44)}</div><div class="id"><b>${esc(p.n)}</b><span>${HOUSES[p.h].n}${NET.role==='guest'&&NET.host&&p.id===NET.host.id?' · хозяин игры':''}</span></div></div>`).join(''):'<p class="sub">Ждём, когда кто-нибудь примет приглашение…</p>'}
+  <button class="gbtn" id="oleave" style="color:#ff9a86">${NET.role==='host'?'Закончить совместную игру':'Покинуть игру'}</button></div>`:''}
+ ${NET.role!=='guest'?`<div class="sect">Кто сейчас в замке</div><div class="list">${ps.length?ps.map(p=>{const busy=p.s!=='free',mine=NET.role==='host'&&NET.mem[p.id];return `<div class="item"><div class="ii" style="background:none;box-shadow:none">${avatar(p,44)}</div><div class="id"><b>${esc(p.n)}</b><span>${HOUSES[p.h]?HOUSES[p.h].n:''} · ${mine?'играет с тобой':busy?(p.s==='host'?'играет с друзьями':'в гостях у '+esc(p.with||'друга')):(p.lv?'решает «'+esc(p.lv)+'»':'свободен')}</span></div>${mine?'':`<button class="btn" data-inv="${esc(p.id)}" ${!NET.conn?'disabled':''}>Позвать</button>`}</div>`}).join(''):`<p class="sub" style="margin:6px 0">Пока никого. Отправь друзьям ссылку — когда они откроют игру, ты увидишь их здесь.</p>`}</div>
+ <div class="sect">Позвать по ссылке</div><p class="sub" style="text-align:left;margin:0 0 8px">Друг откроет ссылку и сразу окажется в твоей игре — на твоём уровне.</p><button class="btn" id="olink" style="width:100%" ${!NET.conn?'disabled':''}>Отправить сову-ссылку</button>`:''}
+ <p class="sub" style="margin-top:12px;font-size:14px">Играется уровень того, кто позвал. Все видят одно поле и ходят одновременно; подсказки и бонусы берутся у хозяина.</p>`;
+ c.querySelector('[data-close]').onclick=closeModal;fixMx($('#mcard'));
+ const on=$('#oname');on.onchange=()=>{S.name=on.value.trim().slice(0,18);save();NET.presence()};on.onkeydown=e=>e.stopPropagation();
+ c.querySelectorAll('[data-inv]').forEach(b=>b.onclick=()=>{const p=NET.peers[b.dataset.inv];if(p){NET.invite(p);b.disabled=true;b.textContent='Сова летит…'}});
+ const ol=$('#oleave');if(ol)ol.onclick=()=>{NET.leave();renderOwlery();if(curScreen==='s-game'&&G&&G.netGuest)menu()};
+ const lk=$('#olink');if(lk)lk.onclick=async()=>{const url=NET.link();renderOwlery();const txt=`${myName()} зовёт тебя в Совудоку — решать загадки Хогвартса вместе!`;
+  if(location.protocol==='file:')toast('Ссылка работает, только когда игра открыта с сайта (например, GitHub Pages).');
+  try{if(navigator.share){await navigator.share({title:'Совудоку',text:txt,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(url);toast('Ссылка скопирована — отправь её другу.')}catch(e){prompt('Скопируй ссылку и отправь другу:',url)}}}
+/* ---- hooks into the game ---- */
+const _banner=banner,_drawCell=drawCell,_place=place,_tap=tap,_undo=undo,_hint=hint,_useBonus=useBonus,_startLevel=startLevel,_win=win,_lose=lose,_petrify=petrify,_backToMap=backToMap,_buildGame=buildGame,_menu=menu,_show=show,_renderHearts=renderHearts;
+banner=function(t,c){_banner(t,c);if(NET.role==='host'&&G&&!G.netGuest&&curScreen==='s-game')NET.toRoom({t:'ban',x:t,c:c||''})};
+drawCell=function(i,init){_drawCell(i,init);if(!init&&NET.role==='host')NET.sched()};
+renderHearts=function(p){_renderHearts(p);if(NET.role==='host')NET.sched()};
+place=function(i){if(G&&G.netGuest)return;const ok=G&&!G.done&&G.st[i]<2;const good=ok&&G.solSet.has(i);_place(i);if(ok&&NET.role==='host'){NET.toRoom({t:'fx',i,ok:good,who:NET.actor||S.pid});NET.sched()}};
+tap=function(i){if(G&&G.netGuest){guestTap(i);return}_tap(i);if(NET.role==='host'&&Object.keys(NET.mem).length)NET.toRoom({t:'tap',i,w:S.pid})};
+function guestTap(i){const now=performance.now(),s=G.st[i];if(G.done)return;
+ if(s===2){const t=$(`.tok[data-i="${i}"]`);if(t){t.classList.remove('wig');void t.offsetWidth;t.classList.add('wig')}return}if(s===3)return;
+ if(G.lastTap.i===i&&now-G.lastTap.t<450){const pv=G.lastTap.prev;G.lastTap={i:-1,t:0};G.st[i]=pv;_drawCell(i);NET.pend[i]=0;NET.act({a:'place',i,prev:pv});return}
+ G.st[i]=s===1?0:1;_drawCell(i);if(G.st[i])AU.x();NET.pend[i]=now;NET.act({a:'x',i});G.lastTap={i,t:now,prev:s}}
+undo=function(){if(G&&G.netGuest){NET.act({a:'undo'});AU.x();return}_undo()};
+hint=function(){if(G&&G.netGuest){NET.act({a:'hint'});return}_hint();if(NET.role==='host'&&G){const f=[...document.querySelectorAll('#cells .cell.foc')].map(e=>[...e.parentNode.children].indexOf(e));NET.toRoom({t:'hint',f,g:G.tgt})}};
+useBonus=function(id,el){if(G&&G.netGuest){NET.act({a:'bonus',b:id});return}_useBonus(id,el)};
+startLevel=function(k,Lx){if(!Lx&&NET.role==='guest'){toast(`Уровень выбирает <b>${esc(NET.host?NET.host.n:'хозяин')}</b>. Чтобы играть в свои, покинь совместную игру.`);return}_startLevel(k,Lx);if(NET.role==='host')NET.sendLevel();NET.presence()};
+win=function(){if(NET.role==='host'&&G)NET.toRoom({t:'win',s:G.maxH===1?(G.mistakes?1:3):Math.max(1,G.hearts),e:Math.round(G.elapsed)});return _win()};
+lose=function(){if(NET.role==='host')NET.toRoom({t:'lose'});return _lose()};
+petrify=function(){if(G&&G.netGuest)return;if(NET.role==='host')NET.toRoom({t:'stone'});return _petrify()};
+backToMap=function(){if(G&&G.netGuest){modal(`<div class="panel dark" style="text-align:center"><h2 class="gt">Покинуть игру?</h2><p class="sub">Ты играешь на поле <b>${esc(NET.host?NET.host.n:'друга')}</b>.</p><div class="mrow"><button class="gbtn" data-close>Остаться</button><button class="btn" id="lvok">Покинуть</button></div></div>`);$('#lvok').onclick=()=>{closeModal();NET.leave();menu()};return}return _backToMap()};
+buildGame=function(){_buildGame();if(G&&G.netGuest){const r=$('#brst');if(r)r.onclick=()=>toast('Начать заново может только хозяин игры.')}const gb=$('#s-game .gbar');if(gb){const b=h(`<button class="chip netchip" id="netchip" aria-label="Совятня"></button>`);b.onclick=owlery;const w=$('#bspell');gb.insertBefore(b,w);NET.ui()}
+ if(G&&G.netGuest){$('#s-game .col').classList.add('guest')}else $('#s-game .col').classList.remove('guest')};
+menu=function(){_menu();const mt=$('#s-menu .mtop');if(mt){const b=h(`<button class="chip owlchip" aria-label="Совятня">${I.owlI.replace('currentColor','#f2d27e')}<span>Совятня</span><b data-owl></b></button>`);b.onclick=owlery;mt.insertBefore(b,mt.children[1]);NET.ui()}};
+show=function(id){_show(id);if(NET.role==='host'&&id!=='s-game'&&Object.keys(NET.mem).length)NET.toRoom({t:'idle',n:myName()})};
+/* timers */
+setInterval(()=>{const now=Date.now();
+ if(NET.role==='host'){for(const k in NET.mem)if(now-NET.mem[k].seen>45000){toast(`<b>${esc(NET.mem[k].n)}</b> потерял(а) связь.`);delete NET.mem[k];NET.sendMem();NET.ui()}
+  if(Object.keys(NET.mem).length){if(curScreen==='s-game'&&G&&!G.netGuest)NET.toRoom(NET.snap());else NET.toRoom({t:'hb'})}}
+ if(NET.role==='guest'){NET.toHost({t:'here'});if(now-NET.last>35000){toast('Связь с хозяином игры потеряна.');const inG=curScreen==='s-game'&&G&&G.netGuest;NET.reset();if(inG){closeModal();menu()}}}},8000);
+setInterval(()=>{if(MQ.ready)NET.presence();NET.ui()},15000);
+addEventListener('pagehide',()=>{if(NET.role)NET.leave(true);NET.pub('lobby',{t:'bye',id:S.pid})});
+/* boot */
+function chkJoin(){const m=/#join=([a-z0-9]{4,10})\.([a-z0-9]{6,24})/i.exec(location.hash);if(!m)return false;try{history.replaceState(null,'',location.href.split('#')[0])}catch(e){}
+ if(m[2]===S.pid)return false;if(!S.set.online){S.set.online=1;save()}
+ if(MQ.ready){pendingJoin=null;NET.join(m[1],{id:m[2],n:'хозяин',h:'G'})}else{pendingJoin={room:m[1],host:m[2]};MQ.start()}return true}
+addEventListener('hashchange',chkJoin);
+(function(){const j=chkJoin();if(S.set.online&&!j)setTimeout(()=>MQ.start(),1200)})();
 </script></body></html>
