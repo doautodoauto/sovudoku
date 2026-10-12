@@ -1615,15 +1615,17 @@ const DOPP=[
 const DSZ=[[8,'Лёгкая · 8×8'],[9,'Средняя · 9×9'],[10,'Трудная · 10×10']];
 let dSz=9,dIv=null;
 function duelL(d,name,num,tag){const n=d.n;return{name,ch:1,idx:0,label:'⚔',num,q:null,key:'d-'+tag,n,reg:[...d.r].map(c=>c.charCodeAt(0)-65),sol:d.s.map((c,r)=>r*n+c),givens:[],duel:true}}
+function netBusy(){return NET.role==='guest'||(NET.role==='host'&&Object.keys(NET.mem||{}).length>0)}
+function netFree(){if(NET.role&&!netBusy())NET.leave(true)}
 const DUEL={a:null,L:null,pend:null,inv:null,waitGo:null,iv:null,
  stats(){if(!S.duel||typeof S.duel!=='object')S.duel={};const d=S.duel;['w','l','s','best','on','clean'].forEach(k=>d[k]=d[k]|0);if(!d.beat||typeof d.beat!=='object')d.beat={};return d},
  copy(){const L=this.L;return Object.assign({},L,{reg:L.reg.slice(),sol:L.sol.slice(),givens:[]})},
  pickBot(o){const [src,a,b]=o.pool,i=a+Math.floor(Math.random()*(b-a));return{d:(src==='e'?LV.ez:LV.mid)[i],tag:src+i}},
  pickSize(n){const all=[...LV.ez.map((d,i)=>[d,'e'+i]),...LV.mid.map((d,i)=>[d,'m'+i])].filter(x=>x[0].n===n);const p=all[Math.floor(Math.random()*all.length)];return{d:p[0],tag:p[1]}},
  busy(){return !!((this.a&&!this.a.done)||this.pend||this.waitGo)},
- vsBot(o){if(NET.role){toast('Сначала заверши совместную игру в Совятне.',I.owlI.replace('currentColor','#f2d27e'));return}AU.x();
+ vsBot(o){if(netBusy()){toast('Сначала заверши совместную игру в Совятне.',I.owlI.replace('currentColor','#f2d27e'));return}AU.x();
   const p=this.pickBot(o);this.start(duelL(p.d,o.n,`Дуэльный клуб · ${p.d.n}×${p.d.n}`,p.tag),o,'bot')},
- start(L,opp,mode,room){this.L=L;const n=L.n,sch=[];
+ start(L,opp,mode,room){netFree();this.L=L;const n=L.n,sch=[];
   if(mode==='bot'){const T=opp.k*n*n*rnd(.88,1.12),w=[...Array(n)].map((_,k)=>rnd(.55,1.45)*(k<2?1.35:1)),sw=w.reduce((a,b)=>a+b,0);let acc=0;w.forEach(v=>{acc+=v/sw*T;sch.push(acc)})}
   this.a={mode,opp,room:room||null,sch,oc:0,mc:0,done:false,go:false,last:Date.now(),hb:0};
   startLevel(L.key,this.copy());this.setup();this.countdown()},
@@ -1674,14 +1676,14 @@ const DUEL={a:null,L:null,pend:null,inv:null,waitGo:null,iv:null,
   if(T.startsWith('d/')){this.netR(T.slice(2),m);return true}return false},
  spec(L){if(!L||typeof L!=='object')return null;const n=L.n|0;if(n<5||n>13||typeof L.r!=='string'||L.r.length!==n*n||!Array.isArray(L.s)||L.s.length!==n)return null;
   if(![...L.r].every(c=>{const v=c.charCodeAt(0)-65;return v>=0&&v<n}))return null;const s=L.s.map(x=>x|0);if(s.some(x=>x<0||x>=n))return null;return{n,r:L.r,s}},
- challenge(peer){if(!MQ.ready){toast('Нет связи с Совятней. Попробуй чуть позже.');return}if(this.busy()||NET.role){toast('Сначала заверши текущую игру.');return}AU.x();
+ challenge(peer){if(!MQ.ready){toast('Нет связи с Совятней. Попробуй чуть позже.');return}if(this.busy()||netBusy()){toast('Сначала заверши текущую игру.');return}AU.x();
   const room=Math.random().toString(36).slice(2,10),p=this.pickSize(dSz),P={room,peer:{id:peer.id,n:String(peer.n||'Волшебник').slice(0,18),h:HOUSES[peer.h]?peer.h:'G'},spec:{n:p.d.n,r:p.d.r,s:p.d.s},tag:p.tag};
   P.t=setTimeout(()=>{if(this.pend===P){this.pend=null;closeModal();toast(`<b>${esc(P.peer.n)}</b> не ответил(а) на вызов.`,I.owlI.replace('currentColor','#f2d27e'))}},45000);this.pend=P;
   NET.pub('u/'+peer.id,{t:'dinv',id:S.pid,n:myName(),h:S.house||'G',room,L:P.spec});
   modal(`<div class="panel dark" style="text-align:center"><h2 class="gt">Вызов отправлен</h2><div style="margin:8px auto;width:56px">${avatar(P.peer,56)}</div><p class="sub">Сова летит к <b>${esc(P.peer.n)}</b> с вызовом на дуэль · поле ${p.d.n}×${p.d.n}. Ждём ответа…</p><div class="mrow"><button class="gbtn" id="dcan">Отменить вызов</button></div></div>`,{onClose:()=>{if(this.pend===P){clearTimeout(P.t);this.pend=null;NET.pub('u/'+P.peer.id,{t:'dcan',id:S.pid,room})}}});
   $('#dcan').onclick=closeModal},
  netU(m){if(typeof m.id!=='string'||typeof m.room!=='string'||m.id===S.pid)return;const nm=String(m.n||'Волшебник').slice(0,18);
-  if(m.t==='dinv'){const L=this.spec(m.L);if(!L)return;if(this.busy()||this.inv||NET.role){NET.pub('u/'+m.id,{t:'ddec',id:S.pid,room:m.room,n:myName(),busy:1});return}
+  if(m.t==='dinv'){const L=this.spec(m.L);if(!L)return;if(this.busy()||this.inv||netBusy()){NET.pub('u/'+m.id,{t:'ddec',id:S.pid,room:m.room,n:myName(),busy:1});return}
    const V={room:m.room,from:{id:m.id,n:nm,h:HOUSES[m.h]?m.h:'G'},spec:L};this.inv=V;V.t=setTimeout(()=>{if(this.inv===V){this.inv=null;closeModal()}},40000);AU.magic();vib([30,30,30]);
    modal(`<div class="parch" style="text-align:center"><div class="kick" style="letter-spacing:.3em;font-family:'Cormorant SC',serif;font-weight:700;color:#7a1d12">ВЫЗОВ НА ДУЭЛЬ</div><div style="margin:10px auto 4px;width:60px">${avatar(V.from,60)}</div><h2 style="font-size:28px;margin:4px 0">${esc(nm)}</h2>
    <p style="font-size:18px;margin:0 0 6px">вызывает тебя на дуэль! Поле <b>${L.n}×${L.n}</b>: кто первым рассадит всех сов, тот и победил.</p>
@@ -1717,7 +1719,7 @@ function renderPeers(){const e=$('#dpeers');if(!e)return;
   $('#donl').onclick=()=>{S.set.online=1;save();NET.setOnline(true);renderPeers()};return}
  const ps=NET.online();
  e.innerHTML=`<div class="rsort dsz">${DSZ.map(([n,t])=>`<button class="${dSz===n?'on':''}" data-z="${n}">${t}</button>`).join('')}</div>
- <div class="list">${!MQ.ready?'<p class="sub dintro">Подключаемся к Совятне…</p>':ps.length?ps.map(p=>`<div class="item dopp"><div class="ii" style="background:none;box-shadow:none;width:46px;height:46px">${avatar(p,44)}</div><div class="id"><b>${esc(p.n)}</b><span>${HOUSES[p.h]?HOUSES[p.h].n:''} · ${p.s==='free'?(p.lv?'решает «'+esc(p.lv)+'»':'в замке'):'в совместной игре'}</span></div><button class="btn" data-p="${esc(p.id)}" ${p.s==='free'?'':'disabled'}>Вызвать</button></div>`).join(''):'<p class="sub dintro">Сейчас в замке никого нет. Позови друга: пусть откроет игру и включит Совятню.</p>'}</div>`;
+ <div class="list">${!MQ.ready?'<p class="sub dintro">Подключаемся к Совятне…</p>':ps.length?ps.map(p=>`<div class="item dopp"><div class="ii" style="background:none;box-shadow:none;width:46px;height:46px">${avatar(p,44)}</div><div class="id"><b>${esc(p.n)}</b><span>${HOUSES[p.h]?HOUSES[p.h].n:''} · ${p.s!=='guest'?(p.lv?'решает «'+esc(p.lv)+'»':'в замке'):'в совместной игре'}</span></div><button class="btn" data-p="${esc(p.id)}" ${p.s==='guest'?'disabled':''}>Вызвать</button></div>`).join(''):'<p class="sub dintro">Сейчас в замке никого нет. Позови друга: пусть откроет игру и включит Совятню.</p>'}</div>`;
  e.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{dSz=+b.dataset.z;AU.x();renderPeers()});
  e.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=NET.peers[b.dataset.p];if(p)DUEL.challenge(p)})}
 {const _p=place;place=function(i){const r=_p.apply(this,arguments);if(G&&G.duel)DUEL.mine();return r}}
@@ -1785,13 +1787,13 @@ const NS='sovudoku-hp-x7k2/v1/';
 const BROKERS=[{url:'wss://broker.emqx.io:8084/mqtt'},{url:'wss://broker.hivemq.com:8884/mqtt'},{url:'wss://public.cloud.shiftr.io:443',u:'public',p:'public'}];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const myName=()=>(S.name||'').trim().slice(0,18)||'Волшебник';
-/* minimal MQTT 3.1.1 over WebSocket (QoS 0). Держим ОДНО соединение (с переключением на запасной брокер); все брокеры сразу — только пока открыта таблица рекордов */
+/* minimal MQTT 3.1.1 over WebSocket (QoS 0). Подключаемся ко всем брокерам сразу: если один недоступен в сети игрока, игроки всё равно встречаются на другом */
 const MQ={conns:[],pi:0,boosted:false,ready:false,subs:new Set(),want:false,enc:new TextEncoder(),dec:new TextDecoder(),onmsg:null,onstate:null,onmore:null,seen:new Map(),
  str(s){const b=this.enc.encode(s);return [b.length>>8,b.length&255,...b]},
  len(n){const o=[];do{let d=n%128;n=Math.floor(n/128);if(n>0)d|=128;o.push(d)}while(n>0);return o},
  send(c,h,body){if(!c.ws||c.ws.readyState!==1)return false;try{c.ws.send(new Uint8Array([h,...this.len(body.length),...body]));return true}catch(e){return false}},
  start(){this.want=true;if(!this.conns.length)this.conns=BROKERS.map(B=>({url:B.url,cr:B.u?[...this.str(B.u),...this.str(B.p)]:null,ws:null,ok:false,buf:new Uint8Array(0),fails:0,pid:1,ping:null,rt:null}));this.ensure()},
- ensure(){if(!this.want)return;const prim=this.conns[this.pi];this.conns.forEach((c,i)=>{const need=this.boosted||i===this.pi;if(need){if(!c.ws&&!c.rt)this.open(c)}else if(c.ws&&prim&&prim.ok)this.close1(c)})},
+ ensure(){if(!this.want)return;const prim=this.conns[this.pi];this.conns.forEach((c,i)=>{const need=true;if(need){if(!c.ws&&!c.rt)this.open(c)}else if(c.ws&&prim&&prim.ok)this.close1(c)})},
  close1(c){clearTimeout(c.rt);c.rt=null;clearInterval(c.ping);const ws=c.ws;if(ws){try{this.send(c,0xE0,[])}catch(e){}c.ws=null;try{ws.close()}catch(e){}}c.ok=false;this.upd()},
  boost(on){this.boosted=!!on;clearTimeout(this.bT);if(on)this.ensure();else this.bT=setTimeout(()=>this.ensure(),15000)},
  failover(c){const i=this.conns.indexOf(c);if(i===this.pi&&!this.ready&&c.fails>=2){this.pi=(i+1)%this.conns.length;this.ensure()}},
@@ -1803,7 +1805,7 @@ const MQ={conns:[],pi:0,boosted:false,ready:false,subs:new Set(),want:false,enc:
   ws.onmessage=e=>{if(c.ws!==ws)return;const a=new Uint8Array(e.data),b=new Uint8Array(c.buf.length+a.length);b.set(c.buf);b.set(a,c.buf.length);c.buf=b;this.parse(c)};
   ws.onclose=()=>{clearTimeout(to);if(c.ws!==ws)return;clearInterval(c.ping);const was=c.ok;c.ok=false;c.ws=null;if(!was)c.fails++;else c.fails=0;this.upd();this.retry(c);this.failover(c)};
   ws.onerror=()=>{}},
- retry(c){if(!this.want)return;clearTimeout(c.rt);const d=Math.min(60000,2500*Math.pow(2,Math.min(c.fails,5)))*(0.7+Math.random()*0.6);c.rt=setTimeout(()=>{c.rt=null;if(this.boosted||this.conns.indexOf(c)===this.pi)this.open(c)},c.fails?d:1500)},
+ retry(c){if(!this.want)return;clearTimeout(c.rt);const d=Math.min(60000,2500*Math.pow(2,Math.min(c.fails,5)))*(0.7+Math.random()*0.6);c.rt=setTimeout(()=>{c.rt=null;if(this.want)this.open(c)},c.fails?d:1500)},
  parse(c){for(;;){const b=c.buf;if(b.length<2)return;let m=1,v=0,k=1,d;do{if(k>=b.length)return;d=b[k++];v+=(d&127)*m;m*=128}while(d&128);if(b.length<k+v)return;
   const h=b[0],body=b.subarray(k,k+v);c.buf=b.slice(k+v);const t=h>>4;
   if(t===2){if(body[1]===0){c.ok=true;c.fails=0;clearInterval(c.ping);c.ping=setInterval(()=>this.send(c,0xC0,[]),25000);for(const s of this.subs)this.sub1(c,s);const first=!this.ready;this.upd();if(!first&&this.onmore)this.onmore();this.ensure()}else{try{c.ws.close()}catch(e){}}}
@@ -1859,7 +1861,7 @@ const NET={role:null,room:null,host:null,mem:{},peers:{},last:0,pend:{},sT:null,
  /* guest */
  gotInvite(m){if(typeof m.room!=='string'||typeof m.id!=='string')return;const H=HOUSES[m.h]?m.h:'G';const from={id:m.id,n:String(m.n||'Волшебник').slice(0,18),h:H};
   if(this.role==='guest'&&this.host&&this.host.id===from.id)return;
-  if(this.role){this.pub('u/'+from.id,Object.assign({t:'dec',busy:1},this.me()));return}
+  if(netBusy()||DUEL.busy()){this.pub('u/'+from.id,Object.assign({t:'dec',busy:1},this.me()));return}
   owlFly(true);AU.magic();vib([30,40,30]);
   modal(`<div class="parch letter2"><div class="seal2" style="background:radial-gradient(circle at 40% 35%,${HOUSES[H].c1},#2a0a06 80%)">${HOUSES[H].L}</div><div class="kick" style="text-align:center;letter-spacing:.3em;font-family:'Cormorant SC',serif;font-weight:700;color:#7a4a12">СОВИНАЯ ПОЧТА</div>
   <h2 style="text-align:center;font-size:28px;margin:4px 0">Приглашение</h2><p class="hand" style="font-size:26px;text-align:center;margin:6px 0;color:#3a2208">«Сыграем вместе?»</p>
@@ -2055,7 +2057,7 @@ achDay();setTimeout(()=>REC.sync(),2500);setTimeout(achCheck,3500);setInterval((
 {const _o=MQ.onmsg;MQ.onmsg=(t,m)=>{if(DUEL.net(t,m))return;_o(t,m)}}
 /* сон Совятни: если вкладка скрыта больше минуты и ты не в совместной игре — отключаемся от брокера */
 document.addEventListener('visibilitychange',()=>{clearTimeout(MQ.hT);
- if(document.hidden){MQ.hT=setTimeout(()=>{if(document.hidden&&!NET.role&&!DUEL.busy()&&MQ.want){MQ.sleeping=true;NET.pub('lobby',{t:'bye',id:S.pid});setTimeout(()=>MQ.stop(),150)}},60000)}
+ if(document.hidden){MQ.hT=setTimeout(()=>{if(document.hidden&&!netBusy()&&!DUEL.busy()&&MQ.want){MQ.sleeping=true;NET.pub('lobby',{t:'bye',id:S.pid});setTimeout(()=>MQ.stop(),150)}},60000)}
  else if(MQ.sleeping){MQ.sleeping=false;if(S.set.online)MQ.start()}});
 if(curScreen==='s-menu')menu();
 </script></body></html>
